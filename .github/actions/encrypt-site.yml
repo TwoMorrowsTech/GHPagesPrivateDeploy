@@ -1,0 +1,25 @@
+name: 'Encrypt Site'
+description: 'Encrypts html files in the output folder of a static site build.'
+inputs:
+  path:
+    description: 'The output folder of a static site build.'
+    required: true
+    default: './_site'
+secrets:
+  SALT:
+    description: 'Encryption salt.'
+    required: true
+  PASSWORD:
+    description: 'Site password.'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Install Staticrypt
+      run: npm install -g staticrypt@3.*
+    - name: Encrypt Site
+      run:  |
+          staticrypt "${{ inputs.path }}/*"" -r -d "${{ inputs.path }}" \
+            --salt "${{ secrets.USERNAME }}" \
+            -p "${{ secrets.PASSWORD }}" \
+            --short
